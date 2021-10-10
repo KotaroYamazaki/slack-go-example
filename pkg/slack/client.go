@@ -2,6 +2,7 @@ package slack
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -73,7 +74,7 @@ func (c *Client) addClickButton(text, URL string) *slack.ActionBlock {
 				&slack.ButtonBlockElement{
 					Type:  slack.METButton,
 					Text:  &slack.TextBlockObject{Type: "plain_text", Text: text, Emoji: true},
-					Value: "click_me_123",
+					Value: fmt.Sprintf("click_me_%s", time.Now().String()),
 					URL:   URL,
 				},
 			},
