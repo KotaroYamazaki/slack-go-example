@@ -1,11 +1,11 @@
 package main
 
 import (
-	"hoge/pkg/slack"
 	"log"
 	"os"
 	"time"
 
+	"github.com/KotaroYamazaki/slack-go-sample/pkg/slack"
 	"github.com/joho/godotenv"
 )
 
@@ -20,16 +20,16 @@ func main() {
 	webhookURL := mustGetenv("SLACK_WEBHOOK_URL")
 	c := slack.New(webhookURL)
 	params := &slack.MessageParams{
-		Color:         "green",
+		Color:         slack.ColorGreen,
 		AuthorName:    "KotaroYamazaki",
 		AuthorLink:    "https://github.com/KotaroYamazaki",
 		AuthorIconURL: "https://avatars.githubusercontent.com/u/7589567?v=4",
 		Text:          "hello world",
-		Footer:        "",
-		FooterIconURL: "",
+		Footer:        "github.com",
+		FooterIconURL: "https://github.githubassets.com/images/modules/logos_page/Octocat.png",
 		Timestamp:     time.Now(),
 		ButtonText:    "Click Me",
-		ButtonURL:     "https://github.com/KotaroYamazaki",
+		ButtonURL:     "https://github.com/KotaroYamazaki/slack-go-sample",
 	}
 	msg := c.BuildWebhookMessage(params)
 	if err := c.PostWebhook(msg); err != nil {

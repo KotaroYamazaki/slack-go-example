@@ -8,6 +8,12 @@ import (
 	"github.com/slack-go/slack"
 )
 
+const (
+	ColorGreen  = "good"
+	ColorRed    = "danger"
+	ColorYellow = "warning"
+)
+
 type Client struct {
 	webhook string
 }
@@ -41,7 +47,7 @@ func (c *Client) BuildWebhookMessage(params *MessageParams) *slack.WebhookMessag
 		AuthorName: params.AuthorName,
 		AuthorLink: params.AuthorName,
 		AuthorIcon: params.AuthorIconURL,
-		Text:       params.AuthorName,
+		Text:       params.Text,
 		Footer:     params.Footer,
 		FooterIcon: params.FooterIconURL,
 		Ts:         json.Number(strconv.FormatInt(params.Timestamp.Unix(), 10)),
