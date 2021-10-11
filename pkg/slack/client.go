@@ -1,8 +1,8 @@
 package slack
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -13,6 +13,8 @@ const (
 	ColorGreen  = "good"
 	ColorRed    = "danger"
 	ColorYellow = "warning"
+
+	blkNum = 1
 )
 
 type Client struct {
@@ -30,6 +32,7 @@ type MessageParams struct {
 	Timestamp     time.Time
 	ButtonText    string
 	ButtonURL     string
+	SectionText   string
 }
 
 func New(webhook string) *Client {
@@ -38,46 +41,56 @@ func New(webhook string) *Client {
 	}
 }
 
-func (c *Client) PostWebhook(msg *slack.WebhookMessage) error {
-	return slack.PostWebhook(c.webhook, msg)
+func (c *Client) PostWebhook(ctx context.Context, msg *slack.WebhookMessage) error {
+	return slack.PostWebhookContext(ctx, c.webhook, msg)
 }
 
 func (c *Client) BuildWebhookMessage(params *MessageParams) *slack.WebhookMessage {
+	blks := make([]slack.Block, 0, blkNum)
+	if params.SectionText != "" {
+		blks = append(blks, c.buildTextSectionBlk(params.SectionText, params.ButtonText, params.ButtonURL))
+	}
+
 	attachment := slack.Attachment{
 		Color:      params.Color,
 		AuthorName: params.AuthorName,
-		AuthorLink: params.AuthorName,
+		AuthorLink: params.AuthorLink,
 		AuthorIcon: params.AuthorIconURL,
 		Text:       params.Text,
 		Footer:     params.Footer,
 		FooterIcon: params.FooterIconURL,
 		Ts:         json.Number(strconv.FormatInt(params.Timestamp.Unix(), 10)),
 	}
-	var blk slack.Block
-	if params.ButtonText != "" && params.ButtonURL != "" {
-		blk = c.addClickButton(params.ButtonText, params.ButtonURL)
-	}
 
 	return &slack.WebhookMessage{
 		Attachments: []slack.Attachment{attachment},
 		Blocks: &slack.Blocks{
-			BlockSet: []slack.Block{blk},
+			BlockSet: blks,
 		},
 	}
 }
 
-func (c *Client) addClickButton(text, URL string) *slack.ActionBlock {
-	return &slack.ActionBlock{
-		Type: slack.MBTAction,
-		Elements: &slack.BlockElements{
-			ElementSet: []slack.BlockElement{
-				&slack.ButtonBlockElement{
-					Type:  slack.METButton,
-					Text:  &slack.TextBlockObject{Type: "plain_text", Text: text, Emoji: true},
-					Value: fmt.Sprintf("click_me_%s", time.Now().String()),
-					URL:   URL,
+func (c *Client) buildTextSectionBlk(text, buttonText, buttonURL string) *slack.SectionBlock {
+	var acs *slack.Accessory
+	if buttonText != "" && buttonURL != "" {
+		acs = slack.NewAccessory(
+			&slack.ButtonBlockElement{
+				Type: slack.METButton,
+				Text: &slack.TextBlockObject{
+					Type:  slack.PlainTextType,
+					Text:  buttonText,
+					Emoji: true,
 				},
-			},
+				URL: buttonURL,
+			})
+	}
+
+	return &slack.SectionBlock{
+		Type: slack.MBTSection,
+		Text: &slack.TextBlockObject{
+			Type: slack.MarkdownType,
+			Text: text,
 		},
+		Accessory: acs,
 	}
 }

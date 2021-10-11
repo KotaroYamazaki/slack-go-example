@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
 	"time"
@@ -17,6 +18,8 @@ func init() {
 }
 
 func main() {
+	ctx := context.Background()
+
 	webhookURL := mustGetenv("SLACK_WEBHOOK_URL")
 	c := slack.New(webhookURL)
 	params := &slack.MessageParams{
@@ -30,9 +33,11 @@ func main() {
 		Timestamp:     time.Now(),
 		ButtonText:    "Click Me",
 		ButtonURL:     "https://github.com/KotaroYamazaki/slack-go-sample",
+		SectionText:   "*go to repository*",
 	}
 	msg := c.BuildWebhookMessage(params)
-	if err := c.PostWebhook(msg); err != nil {
+
+	if err := c.PostWebhook(ctx, msg); err != nil {
 		log.Panicln(err)
 	}
 }

@@ -39,6 +39,7 @@ e.g.
 		Timestamp:     time.Now(),
 		ButtonText:    "Click Me",
 		ButtonURL:     "https://github.com/KotaroYamazaki/slack-go-sample",
+		SectionText:   "*go to repository*",
 	}
 ```
 
@@ -50,4 +51,4 @@ go run main.go
 
 # result
 
-![image](https://user-images.githubusercontent.com/7589567/136696917-ad2e1463-1f49-40b5-a8ab-16c63315e547.png)
+![image](https://user-images.githubusercontent.com/7589567/136746375-7debe5b1-bd4a-45bf-8b58-65ed1eaa54f8.png)
