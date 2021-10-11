@@ -12,11 +12,11 @@ $ go get -u github.com/slack-go/slack
 
 ## get webhook
 
-get webhook url from https://slack.com/services/new/incoming-webhook
+create webhook url from https://slack.com/services/new/incoming-webhook
 
 # usage
 
-1. set your slack webhook
+1. set your slack webhook to .env
 
 ```
 SLACK_WEBHOOK={YOUR_SLACK_WEBHOOK}
