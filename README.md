@@ -1,6 +1,6 @@
-# slack-go Sample
+# slack-go sample
 
-ref: https://github.com/slack-go/slack
+this is an exmample of [slack-go](https://github.com/slack-go/slack)
 
 # setup
 
