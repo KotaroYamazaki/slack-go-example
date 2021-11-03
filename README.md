@@ -1,4 +1,4 @@
-# Slack-go Sample
+# slack-go Sample
 
 ref: https://github.com/slack-go/slack
 
